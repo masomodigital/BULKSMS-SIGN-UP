@@ -74,60 +74,63 @@
     <div class="message" id="message"></div>
   </form>
 
-  <script>
-    const form = document.getElementById('signupForm');
-    const messageDiv = document.getElementById('message');
+ <script>
+  const form = document.getElementById('signupForm');
+  const messageDiv = document.getElementById('message');
 
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      messageDiv.style.color = 'black';
-      messageDiv.textContent = 'Submitting...';
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    messageDiv.style.color = 'black';
+    messageDiv.textContent = 'Submitting...';
 
-      const data = {
-        nationalId: form.nationalId.value.trim(),
-        name: form.name.value.trim(),
-        password: form.password.value,
-        phone: form.phone.value.trim(),
-      };
+    const data = {
+      nationalId: form.nationalId.value.trim(),
+      name: form.name.value.trim(),
+      password: form.password.value,
+      phone: form.phone.value.trim(),
+    };
 
-      try {
-        const queryString = new URLSearchParams(data).toString();
+    try {
+      const queryString = new URLSearchParams(data).toString();
 
-        // Replace with your deployed Apps Script URL
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
+      // ✅ Replace this with your actual deployed script URL if changed
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
 
-        const response = await fetch(`${scriptUrl}?${queryString}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // mode: 'cors' is default for cross-origin requests in fetch
-        });
+      const response = await fetch(`${scriptUrl}?${queryString}`, {
+        method: 'GET',
+      });
 
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
+      const resp = await response.json();
+
+      if (response.ok) {
+        switch (resp.status) {
+          case 'success':
+            messageDiv.style.color = 'green';
+            messageDiv.textContent = 'Registration successful!';
+            form.reset();
+            break;
+          case 'exists':
+            messageDiv.style.color = 'orange';
+            messageDiv.textContent = resp.message;
+            break;
+          case 'error':
+          default:
+            messageDiv.style.color = 'red';
+            messageDiv.textContent = resp.message || 'Something went wrong.';
         }
-
-        const resp = await response.json();
-
-        if (resp.status === 'success') {
-          messageDiv.style.color = 'green';
-          messageDiv.textContent = 'Registration successful!';
-          form.reset();
-        } else if (resp.status === 'exists') {
-          messageDiv.style.color = 'orange';
-          messageDiv.textContent = resp.message;
-        } else {
-          messageDiv.style.color = 'red';
-          messageDiv.textContent = resp.message || 'Unknown error';
-        }
-      } catch (error) {
+      } else {
         messageDiv.style.color = 'red';
-        messageDiv.textContent = 'Failed to load registration service. Please try again later.';
-        console.error('Error:', error);
+        messageDiv.textContent = 'Server error. Please try again.';
       }
-    });
-  </script>
+
+    } catch (error) {
+      messageDiv.style.color = 'red';
+      messageDiv.textContent = 'Failed to submit form. Check your connection.';
+      console.error('Error:', error);
+    }
+  });
+</script>
+
 </body>
 </html>
 
