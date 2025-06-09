@@ -96,6 +96,7 @@
       const oldScript = document.getElementById('jsonpScript');
       if (oldScript) oldScript.remove();
 
+      // Define the callback function
       window[callbackName] = function(resp) {
         console.log('Response:', resp);
         if (resp.status === 'success') {
@@ -111,25 +112,32 @@
         }
         // Clean up
         delete window[callbackName];
-        document.getElementById('jsonpScript').remove();
+        const scriptTag = document.getElementById('jsonpScript');
+        if(scriptTag) scriptTag.remove();
       };
 
-      // Build URL with query params + callback
+      // Create the JSONP script tag
       const params = new URLSearchParams(data);
       params.append('callback', callbackName);
 
-      // CHANGE THIS TO YOUR DEPLOYED SCRIPT URL (must end with /exec)
+      // Your deployed Apps Script URL
       const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
-
       const url = scriptUrl + '?' + params.toString();
 
-      // Create script tag for JSONP
       const script = document.createElement('script');
       script.src = url;
       script.id = 'jsonpScript';
+
+      // Error handling if script fails to load
+      script.onerror = () => {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Failed to load registration service. Please try again later.';
+        delete window[callbackName];
+        script.remove();
+      };
+
       document.body.appendChild(script);
     });
   </script>
 </body>
 </html>
-
