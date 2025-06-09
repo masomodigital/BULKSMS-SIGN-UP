@@ -78,7 +78,7 @@
     const form = document.getElementById('signupForm');
     const messageDiv = document.getElementById('message');
 
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       messageDiv.style.color = 'black';
       messageDiv.textContent = 'Submitting...';
@@ -90,15 +90,26 @@
         phone: form.phone.value.trim(),
       };
 
-      const callbackName = 'handleResponse';
+      try {
+        const queryString = new URLSearchParams(data).toString();
 
-      // Remove any previous JSONP script
-      const oldScript = document.getElementById('jsonpScript');
-      if (oldScript) oldScript.remove();
+        // Replace with your deployed Apps Script URL
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
 
-      // Define the callback function
-      window[callbackName] = function(resp) {
-        console.log('Response:', resp);
+        const response = await fetch(`${scriptUrl}?${queryString}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // mode: 'cors' is default for cross-origin requests in fetch
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const resp = await response.json();
+
         if (resp.status === 'success') {
           messageDiv.style.color = 'green';
           messageDiv.textContent = 'Registration successful!';
@@ -110,34 +121,13 @@
           messageDiv.style.color = 'red';
           messageDiv.textContent = resp.message || 'Unknown error';
         }
-        // Clean up
-        delete window[callbackName];
-        const scriptTag = document.getElementById('jsonpScript');
-        if(scriptTag) scriptTag.remove();
-      };
-
-      // Create the JSONP script tag
-      const params = new URLSearchParams(data);
-      params.append('callback', callbackName);
-
-      // Your deployed Apps Script URL
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
-      const url = scriptUrl + '?' + params.toString();
-
-      const script = document.createElement('script');
-      script.src = url;
-      script.id = 'jsonpScript';
-
-      // Error handling if script fails to load
-      script.onerror = () => {
+      } catch (error) {
         messageDiv.style.color = 'red';
         messageDiv.textContent = 'Failed to load registration service. Please try again later.';
-        delete window[callbackName];
-        script.remove();
-      };
-
-      document.body.appendChild(script);
+        console.error('Error:', error);
+      }
     });
   </script>
 </body>
 </html>
+
