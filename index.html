@@ -6,56 +6,82 @@
   <title>SMS Sign-Up</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 2em;
-      background-color: #f2f2f2;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
+
     form {
-      background-color: #fff;
-      padding: 1.5em;
-      border-radius: 10px;
-      max-width: 400px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+      padding: 2em;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
+
     h2 {
       text-align: center;
-      margin-bottom: 1em;
+      margin-bottom: 1.2em;
+      color: green;
+      font-weight: bold;
+      font-size: 1.6em;
     }
+
     label {
       display: block;
       font-weight: bold;
-      margin-bottom: 0.3em;
+      margin-bottom: 0.4em;
+      color: #333;
     }
+
     input {
       width: 100%;
-      padding: 0.7em;
-      margin-bottom: 1em;
-      box-sizing: border-box;
+      padding: 0.75em;
+      margin-bottom: 1.2em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
     }
+
     button {
       width: 100%;
-      padding: 0.7em;
+      padding: 0.8em;
       background-color: green;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 1em;
+      font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: darkgreen;
     }
+
     .message {
       text-align: center;
       font-weight: bold;
       margin-top: 1em;
     }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.4em;
+      }
+    }
   </style>
 </head>
 <body>
   <form id="signupForm">
-    <h2>Sign Up for SMS Credits</h2>
+    <h2>NEW USER SIGN UP</h2>
 
     <label for="nationalId">National ID</label>
     <input type="text" id="nationalId" name="nationalId" required />
@@ -74,63 +100,59 @@
     <div class="message" id="message"></div>
   </form>
 
- <script>
-  const form = document.getElementById('signupForm');
-  const messageDiv = document.getElementById('message');
+  <script>
+    const form = document.getElementById('signupForm');
+    const messageDiv = document.getElementById('message');
 
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    messageDiv.style.color = 'black';
-    messageDiv.textContent = 'Submitting...';
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      messageDiv.style.color = 'black';
+      messageDiv.textContent = 'Submitting...';
 
-    const data = {
-      nationalId: form.nationalId.value.trim(),
-      name: form.name.value.trim(),
-      password: form.password.value,
-      phone: form.phone.value.trim(),
-    };
+      const data = {
+        nationalId: form.nationalId.value.trim(),
+        name: form.name.value.trim(),
+        password: form.password.value,
+        phone: form.phone.value.trim(),
+      };
 
-    try {
-      const queryString = new URLSearchParams(data).toString();
+      try {
+        const queryString = new URLSearchParams(data).toString();
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
 
-      // ✅ Replace this with your actual deployed script URL if changed
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
+        const response = await fetch(`${scriptUrl}?${queryString}`, {
+          method: 'GET',
+        });
 
-      const response = await fetch(`${scriptUrl}?${queryString}`, {
-        method: 'GET',
-      });
+        const resp = await response.json();
 
-      const resp = await response.json();
-
-      if (response.ok) {
-        switch (resp.status) {
-          case 'success':
-            messageDiv.style.color = 'green';
-            messageDiv.textContent = 'Registration successful!';
-            form.reset();
-            break;
-          case 'exists':
-            messageDiv.style.color = 'orange';
-            messageDiv.textContent = resp.message;
-            break;
-          case 'error':
-          default:
-            messageDiv.style.color = 'red';
-            messageDiv.textContent = resp.message || 'Something went wrong.';
+        if (response.ok) {
+          switch (resp.status) {
+            case 'success':
+              messageDiv.style.color = 'green';
+              messageDiv.textContent = 'Registration successful!';
+              form.reset();
+              break;
+            case 'exists':
+              messageDiv.style.color = 'orange';
+              messageDiv.textContent = resp.message;
+              break;
+            case 'error':
+            default:
+              messageDiv.style.color = 'red';
+              messageDiv.textContent = resp.message || 'Something went wrong.';
+          }
+        } else {
+          messageDiv.style.color = 'red';
+          messageDiv.textContent = 'Server error. Please try again.';
         }
-      } else {
+
+      } catch (error) {
         messageDiv.style.color = 'red';
-        messageDiv.textContent = 'Server error. Please try again.';
+        messageDiv.textContent = 'Failed to submit form. Check your connection.';
+        console.error('Error:', error);
       }
-
-    } catch (error) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Failed to submit form. Check your connection.';
-      console.error('Error:', error);
-    }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
-
