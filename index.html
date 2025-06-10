@@ -104,13 +104,6 @@
     const form = document.getElementById('signupForm');
     const messageDiv = document.getElementById('message');
 
-    // --- START: ADDED CODE FOR REFERRAL CAPTURE ---
-    // Get the current URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    // Extract the 'ref' parameter if it exists
-    const referralCodeFromUrl = urlParams.get('ref');
-    // --- END: ADDED CODE ---
-
     form.addEventListener('submit', async e => {
       e.preventDefault();
       messageDiv.style.color = 'black';
@@ -123,16 +116,8 @@
         phone: form.phone.value.trim(),
       };
 
-      // --- START: ADDED CODE TO INCLUDE REFERRAL CODE IN DATA ---
-      // If a referral code was found in the URL, add it to the data object
-      if (referralCodeFromUrl) {
-        data.ref = referralCodeFromUrl;
-      }
-      // --- END: ADDED CODE ---
-
       try {
         const queryString = new URLSearchParams(data).toString();
-        // This is your signup script's deployment URL
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbzR0VjS4-fkKuXtbsEXPOGZJ9tdZRq807EXuqnZ3U1nHuViBiRfWuy0NcWibxE7BOdG/exec';
 
         const response = await fetch(`${scriptUrl}?${queryString}`, {
@@ -147,8 +132,6 @@
               messageDiv.style.color = 'green';
               messageDiv.textContent = 'Registration successful!';
               form.reset();
-              // Optional: Clear the referral parameter from the URL after successful signup
-              // window.history.replaceState({}, document.title, window.location.pathname);
               break;
             case 'exists':
               messageDiv.style.color = 'orange';
@@ -162,7 +145,6 @@
         } else {
           messageDiv.style.color = 'red';
           messageDiv.textContent = 'Server error. Please try again.';
-        (
         }
 
       } catch (error) {
