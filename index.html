@@ -72,6 +72,27 @@
       margin-top: 1em;
     }
 
+    .admin-login-btn {
+      display: block;
+      margin: 1em auto 0 auto;
+      padding: 0.4em 1.2em;
+      background-color: red;
+      color: white;
+      font-size: 0.85em;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      width: fit-content;
+      transition: background-color 0.3s ease;
+    }
+
+    .admin-login-btn:hover {
+      background-color: darkred;
+    }
+
     @media (max-width: 480px) {
       h2 {
         font-size: 1.4em;
@@ -103,6 +124,8 @@
       and
       <a href="https://masomodigital.github.io/bulksms-privacypolicy/" target="_blank">Privacy Policy</a>.
     </p>
+
+    <a href="https://masomodigital.github.io/withdrawal-record/" class="admin-login-btn" target="_blank" rel="noopener noreferrer">Admin Login</a>
 
     <div class="message" id="message"></div>
   </form>
