@@ -117,8 +117,16 @@
     <input type="password" id="password" name="password" required />
 
     <label for="phone">Phone Number</label>
-    <input type="text" id="phone" name="phone" required />
-
+<input 
+    type="tel" 
+    id="phone" 
+    name="phone" 
+    required 
+    placeholder="07XXXXXXXX" 
+    pattern="^0\d{9}$" 
+    title="Enter a 10‑digit phone number starting with 0 (e.g., 0715399449)" 
+    oninput="this.value = this.value.replace(/\D/g, '')"
+/>
     <button type="submit">Sign Up</button>
 
     <p style="font-size: 0.85em; text-align: center; color: #555; margin-top: 1em;">
