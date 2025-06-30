@@ -103,17 +103,18 @@
 <body>
   <form id="signupForm">
     <div style="text-align: center;">
-    <img 
-    src="https://i.imgur.com/9uLFKXG.jpeg" 
-    alt="Logo" 
-    style="display: block; max-width: 100%; height: auto; margin: 0 auto;" 
-/>
-    <h2>NEW USER SIGN UP</h2>
-</div>
+      <img 
+        src="https://i.imgur.com/9uLFKXG.jpeg" 
+        alt="Logo" 
+        style="display: block; max-width: 100%; height: auto; margin: 0 auto;" 
+      />
+      <h2>NEW USER SIGN UP</h2>
+    </div>
 
-<p style="color: white; font-weight: bold; text-align: center; margin-top: -0.6em; margin-bottom: 1.2em;">
-  <span style="background-color: #000000; padding: 0 4px;">Sign Up NOW for FREE and get FREE SMS Credits!</span>
-</p>
+    <p style="color: white; font-weight: bold; text-align: center; margin-top: -0.6em; margin-bottom: 1.2em;">
+      <span style="background-color: #000000; padding: 0 4px;">Sign Up NOW for FREE and get FREE SMS Credits!</span>
+    </p>
+
     <label for="nationalId">National ID or UNIQUE USER ID</label>
     <input type="text" id="nationalId" name="nationalId" required />
 
@@ -124,16 +125,19 @@
     <input type="password" id="password" name="password" required />
 
     <label for="phone">Phone Number - SAFARICOM</label>
-<input 
-    type="tel" 
-    id="phone" 
-    name="phone" 
-    required 
-    placeholder="07XXXXXXXX" 
-    pattern="^0\d{9}$" 
-    title="Enter a 10‑digit phone number starting with 0 (e.g., 0715399449)" 
-    oninput="this.value = this.value.replace(/\D/g, '').slice(0,10)" 
-/>
+    <input 
+      type="tel" 
+      id="phone" 
+      name="phone" 
+      required 
+      placeholder="07XXXXXXXX" 
+      pattern="^0\d{9}$" 
+      title="Enter a 10‑digit phone number starting with 0 (e.g., 0715399449)" 
+      oninput="this.value = this.value.replace(/\D/g, '').slice(0,10)" 
+    />
+
+    <label for="referredBy">Referred By User ID</label>
+    <input type="text" id="referredBy" name="referredBy" required />
 
     <button type="submit">Sign Up</button>
 
@@ -163,6 +167,7 @@
         name: form.name.value.trim(),
         password: form.password.value,
         phone: form.phone.value.trim(),
+        referredBy: form.referredBy.value.trim(),
       };
 
       try {
