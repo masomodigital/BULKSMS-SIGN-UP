@@ -136,7 +136,15 @@
       oninput="this.value = this.value.replace(/\D/g, '').slice(0,10)" 
     />
 
-    <label for="referredBy">Referred By User ID</label>
+    <label for="referredBy">
+  Referred By User ID
+  <a href="https://masomodigital.github.io/confirm-UserID/" target="_blank" style="margin-left: 10px;">
+    <button type="button" style="background-color: red; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer;">
+      Click here to confirm User ID
+    </button>
+  </a>
+</label>
+
     <input type="text" id="referredBy" name="referredBy" required />
 
     <button type="submit">Sign Up</button>
